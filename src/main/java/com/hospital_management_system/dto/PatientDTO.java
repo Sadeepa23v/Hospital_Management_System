@@ -2,19 +2,53 @@ package com.hospital_management_system.dto;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Past;
+
+
 public class PatientDTO {
 
     private Long patientId;
+
+
+    @NotBlank(message = "First name is required")
     private String firstName;
+
+
+    @NotBlank(message = "Last name is required")
     private String lastName;
+
+
+    @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
+
+
+    @NotBlank(message = "Gender is required")
     private String gender;
+
+
+    @NotBlank(message = "Phone number is required")
+    @Pattern(
+            regexp = "^[0-9]{10}$",
+            message = "Phone number must contain exactly 10 digits"
+    )
     private String phone;
+
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
+
+
+    @NotBlank(message = "Address is required")
     private String address;
+
 
     public PatientDTO() {
     }
+
 
     public PatientDTO(Long patientId, String firstName, String lastName,
                       LocalDate dateOfBirth, String gender,
@@ -30,6 +64,7 @@ public class PatientDTO {
         this.address = address;
     }
 
+
     public Long getPatientId() {
         return patientId;
     }
@@ -37,6 +72,7 @@ public class PatientDTO {
     public void setPatientId(Long patientId) {
         this.patientId = patientId;
     }
+
 
     public String getFirstName() {
         return firstName;
@@ -46,6 +82,7 @@ public class PatientDTO {
         this.firstName = firstName;
     }
 
+
     public String getLastName() {
         return lastName;
     }
@@ -53,6 +90,7 @@ public class PatientDTO {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
 
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
@@ -62,6 +100,7 @@ public class PatientDTO {
         this.dateOfBirth = dateOfBirth;
     }
 
+
     public String getGender() {
         return gender;
     }
@@ -69,6 +108,7 @@ public class PatientDTO {
     public void setGender(String gender) {
         this.gender = gender;
     }
+
 
     public String getPhone() {
         return phone;
@@ -78,6 +118,7 @@ public class PatientDTO {
         this.phone = phone;
     }
 
+
     public String getEmail() {
         return email;
     }
@@ -85,6 +126,7 @@ public class PatientDTO {
     public void setEmail(String email) {
         this.email = email;
     }
+
 
     public String getAddress() {
         return address;

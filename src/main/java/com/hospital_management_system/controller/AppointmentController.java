@@ -1,7 +1,8 @@
 package com.hospital_management_system.controller;
 
-import com.hospital_management_system.entity.Appointment;
+import com.hospital_management_system.dto.AppointmentDTO;
 import com.hospital_management_system.service.AppointmentService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,26 +14,39 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
 
+
     public AppointmentController(AppointmentService appointmentService) {
         this.appointmentService = appointmentService;
     }
 
 
     @GetMapping
-    public List<Appointment> getAllAppointments() {
+    public List<AppointmentDTO> getAllAppointments() {
         return appointmentService.getAllAppointments();
     }
 
 
+    @GetMapping("/{id}")
+    public AppointmentDTO getAppointmentById(@PathVariable Long id) {
+
+        return appointmentService.getAppointmentById(id)
+                .orElse(null);
+    }
+
+
     @PostMapping
-    public Appointment createAppointment(@RequestBody Appointment appointment) {
-        return appointmentService.saveAppointment(appointment);
+    public AppointmentDTO createAppointment(
+            @Valid @RequestBody AppointmentDTO appointmentDTO) {
+
+        return appointmentService.saveAppointment(appointmentDTO);
     }
 
 
     @DeleteMapping("/{id}")
     public String deleteAppointment(@PathVariable Long id) {
+
         appointmentService.deleteAppointment(id);
+
         return "Appointment deleted successfully";
     }
 
