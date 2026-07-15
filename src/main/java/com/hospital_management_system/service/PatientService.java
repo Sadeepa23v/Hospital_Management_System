@@ -2,12 +2,12 @@ package com.hospital_management_system.service;
 
 import com.hospital_management_system.dto.PatientDTO;
 import com.hospital_management_system.entity.Patient;
+import com.hospital_management_system.exception.ResourceNotFoundException;
 import com.hospital_management_system.mapper.PatientMapper;
 import com.hospital_management_system.repository.PatientRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PatientService {
@@ -30,10 +30,16 @@ public class PatientService {
     }
 
 
-    public Optional<PatientDTO> getPatientById(Long id) {
+    public PatientDTO getPatientById(Long id) {
 
-        return patientRepository.findById(id)
-                .map(PatientMapper::toDTO);
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Patient not found with id: " + id
+                        )
+                );
+
+        return PatientMapper.toDTO(patient);
     }
 
 
@@ -41,7 +47,9 @@ public class PatientService {
 
         Patient patient = PatientMapper.toEntity(patientDTO);
 
-        Patient savedPatient = patientRepository.save(patient);
+        Patient savedPatient =
+                patientRepository.save(patient);
+
 
         return PatientMapper.toDTO(savedPatient);
     }
@@ -49,7 +57,14 @@ public class PatientService {
 
     public void deletePatient(Long id) {
 
-        patientRepository.deleteById(id);
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Patient not found with id: " + id
+                        )
+                );
+
+        patientRepository.delete(patient);
     }
 
 }

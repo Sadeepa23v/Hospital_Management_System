@@ -29,8 +29,12 @@ public class TokenController {
     @GetMapping("/{id}")
     public TokenDTO getTokenById(@PathVariable Long id) {
 
-        return tokenService.getTokenById(id)
-                .orElse(null);
+        // TokenService#getTokenById returns a TokenDTO (not Optional),
+        // so return it directly. If the service may return null, the
+        // controller will return null (HTTP 200 with empty body).
+        // For better API semantics consider returning ResponseEntity and
+        // map null to 404, but keep this change minimal to fix the compile error.
+        return tokenService.getTokenById(id);
     }
 
 

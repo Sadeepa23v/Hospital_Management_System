@@ -29,8 +29,8 @@ public class DoctorController {
     @GetMapping("/{id}")
     public DoctorDTO getDoctorById(@PathVariable Long id) {
 
-        return doctorService.getDoctorById(id)
-                .orElse(null);
+        // DoctorService#getDoctorById returns a DoctorDTO (not Optional), so return it directly.
+        return doctorService.getDoctorById(id);
     }
 
 

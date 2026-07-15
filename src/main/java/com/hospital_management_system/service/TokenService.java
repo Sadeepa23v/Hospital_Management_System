@@ -2,15 +2,16 @@ package com.hospital_management_system.service;
 
 import com.hospital_management_system.dto.TokenDTO;
 import com.hospital_management_system.entity.Token;
+import com.hospital_management_system.exception.ResourceNotFoundException;
 import com.hospital_management_system.mapper.TokenMapper;
 import com.hospital_management_system.repository.TokenRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TokenService {
+
 
     private final TokenRepository tokenRepository;
 
@@ -29,18 +30,29 @@ public class TokenService {
     }
 
 
-    public Optional<TokenDTO> getTokenById(Long id) {
+    public TokenDTO getTokenById(Long id) {
 
-        return tokenRepository.findById(id)
-                .map(TokenMapper::toDTO);
+        Token token = tokenRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Token not found with id: " + id
+                        )
+                );
+
+
+        return TokenMapper.toDTO(token);
     }
 
 
     public TokenDTO saveToken(TokenDTO tokenDTO) {
 
-        Token token = TokenMapper.toEntity(tokenDTO);
+        Token token =
+                TokenMapper.toEntity(tokenDTO);
 
-        Token savedToken = tokenRepository.save(token);
+
+        Token savedToken =
+                tokenRepository.save(token);
+
 
         return TokenMapper.toDTO(savedToken);
     }
@@ -48,7 +60,15 @@ public class TokenService {
 
     public void deleteToken(Long id) {
 
-        tokenRepository.deleteById(id);
+        Token token = tokenRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Token not found with id: " + id
+                        )
+                );
+
+
+        tokenRepository.delete(token);
     }
 
 }

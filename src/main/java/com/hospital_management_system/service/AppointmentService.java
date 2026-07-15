@@ -2,17 +2,19 @@ package com.hospital_management_system.service;
 
 import com.hospital_management_system.dto.AppointmentDTO;
 import com.hospital_management_system.entity.Appointment;
+import com.hospital_management_system.exception.ResourceNotFoundException;
 import com.hospital_management_system.mapper.AppointmentMapper;
 import com.hospital_management_system.repository.AppointmentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AppointmentService {
 
+
     private final AppointmentRepository appointmentRepository;
+
 
     public AppointmentService(AppointmentRepository appointmentRepository) {
         this.appointmentRepository = appointmentRepository;
@@ -28,18 +30,32 @@ public class AppointmentService {
     }
 
 
-    public Optional<AppointmentDTO> getAppointmentById(Long id) {
+    public AppointmentDTO getAppointmentById(Long id) {
 
-        return appointmentRepository.findById(id)
-                .map(AppointmentMapper::toDTO);
+        Appointment appointment =
+                appointmentRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Appointment not found with id: " + id
+                                )
+                        );
+
+
+        return AppointmentMapper.toDTO(appointment);
     }
 
 
-    public AppointmentDTO saveAppointment(AppointmentDTO appointmentDTO) {
+    public AppointmentDTO saveAppointment(
+            AppointmentDTO appointmentDTO) {
 
-        Appointment appointment = AppointmentMapper.toEntity(appointmentDTO);
 
-        Appointment savedAppointment = appointmentRepository.save(appointment);
+        Appointment appointment =
+                AppointmentMapper.toEntity(appointmentDTO);
+
+
+        Appointment savedAppointment =
+                appointmentRepository.save(appointment);
+
 
         return AppointmentMapper.toDTO(savedAppointment);
     }
@@ -47,7 +63,16 @@ public class AppointmentService {
 
     public void deleteAppointment(Long id) {
 
-        appointmentRepository.deleteById(id);
+        Appointment appointment =
+                appointmentRepository.findById(id)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Appointment not found with id: " + id
+                                )
+                        );
+
+
+        appointmentRepository.delete(appointment);
     }
 
 }

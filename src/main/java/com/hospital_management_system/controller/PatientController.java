@@ -14,25 +14,19 @@ public class PatientController {
 
     private final PatientService patientService;
 
-
     public PatientController(PatientService patientService) {
         this.patientService = patientService;
     }
-
 
     @GetMapping
     public List<PatientDTO> getAllPatients() {
         return patientService.getAllPatients();
     }
 
-
     @GetMapping("/{id}")
     public PatientDTO getPatientById(@PathVariable Long id) {
-
-        return patientService.getPatientById(id)
-                .orElse(null);
+        return patientService.getPatientById(id);
     }
-
 
     @PostMapping
     public PatientDTO createPatient(
@@ -41,7 +35,6 @@ public class PatientController {
         return patientService.savePatient(patientDTO);
     }
 
-
     @DeleteMapping("/{id}")
     public String deletePatient(@PathVariable Long id) {
 
@@ -49,5 +42,4 @@ public class PatientController {
 
         return "Patient deleted successfully";
     }
-
 }
